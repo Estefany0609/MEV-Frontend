@@ -1,4 +1,6 @@
 import { route } from "quasar/wrappers";
+import { useUserStore } from "src/stores/user-store";
+
 import {
   createRouter,
   createMemoryHistory,
@@ -19,6 +21,49 @@ export default route(function (/* { store, ssrContext } */) {
     routes,
 
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach(async (to, from, next) => {
+    const requiredAuth = to.meta.auth;
+    const userStore = useUserStore();
+
+    //Si existe el token en memoria
+    if (userStore.token) {
+      return next();
+    }
+
+    // Si no existe el token (se refresco el sitio web)
+    if (requiredAuth || sessionStorage.getItem("user")) {
+      await userStore.refreshToken();
+      if (userStore.token) {
+        return next();
+      }
+      return next("/login");
+    }
+    return next();
+
+    /* V1
+    if (sessionStorage.getItem("user")) {
+      //Si no existe el token
+      await userStore.refreshToken();
+      if (requiredAuth) {
+        //Validar al usuario o token
+        if (userStore.token) {
+          return next();
+        }
+        return next("/login");
+      } else {
+        return next();
+      }
+    } else {
+      if (requiredAuth) {
+        await userStore.refreshToken();
+        if (userStore.token) {
+          return next();
+        }
+        return next("/login");
+      }
+      next(); */
   });
 
   return Router;
