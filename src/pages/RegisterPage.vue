@@ -11,14 +11,16 @@ const router = useRouter();
 
 const email = ref("");
 const password = ref("");
+const repassword = ref("");
 
 const handleSubmit = async () => {
   try {
     console.log("paso las validaciones");
-    await userStore.access(email.value, password.value);
+    await userStore.register(email.value, password.value, repassword.value);
     router.push("/");
     email.value = "";
     password.value = "";
+    repassword.value = "";
   } catch (error) {
     console.log("error", error);
     if (error.error) {
@@ -42,7 +44,7 @@ const alertDialogBackend = (message = "Error en el servidor") => {
 <template>
   <q-page class="row justify-center">
     <div class="col-12 col-sm-6 col-md-4">
-      <h3>Login</h3>
+      <h3>Registro</h3>
       <q-form @submit.prevent="handleSubmit">
         <q-input
           v-model="email"
@@ -63,6 +65,17 @@ const alertDialogBackend = (message = "Error en el servidor") => {
               (val && val.length > 5) || 'Contraseña Minimo 6 caracteresr',
           ]"
         ></q-input>
+
+        <q-input
+          v-model="repassword"
+          label="Repita Contraseña"
+          type="password"
+          :rules="[
+            (val) =>
+              (val && val === password) || 'No coinciden las constraseñas',
+          ]"
+        ></q-input>
+
         <div>
           <q-btn type="submit"> Login</q-btn>
         </div>

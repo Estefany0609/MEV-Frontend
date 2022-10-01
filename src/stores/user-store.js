@@ -6,20 +6,52 @@ export const useUserStore = defineStore("user", () => {
   const token = ref(null);
   const expiresIn = ref(null);
 
-  const access = async () => {
+  const access = async (email, password) => {
     try {
       console.log("me diste click");
       const res = await api.post("/auth/login", {
-        email: "tefo@gmail.com",
-        password: "123456",
+        email: email,
+        password: password,
       });
       token.value = res.data.token;
       expiresIn.value = res.data.expiresIn;
       sessionStorage.setItem("user", true);
-      console.log(res.data);
       setTime();
     } catch (error) {
-      console.log(error);
+      if (error.response) {
+        //console.log(error.response.data);
+        throw error.response.data;
+      } else if (error.request) {
+        //console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+    }
+  };
+
+  const register = async (email, password, repassword) => {
+    try {
+      console.log("me diste click");
+      const res = await api.post("/auth/register", {
+        email: email,
+        password: password,
+        repassword: repassword,
+      });
+      token.value = res.data.token;
+      expiresIn.value = res.data.expiresIn;
+      sessionStorage.setItem("user", true);
+      setTime();
+    } catch (error) {
+      if (error.response) {
+        //console.log(error.response.data);
+        throw error.response.data;
+      } else if (error.request) {
+        //console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
     }
   };
 
@@ -64,5 +96,6 @@ export const useUserStore = defineStore("user", () => {
     access,
     refreshToken,
     logout,
+    register,
   };
 });
