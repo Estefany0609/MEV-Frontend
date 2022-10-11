@@ -1,20 +1,19 @@
 <script setup>
-import { useUserStore } from "src/stores/user-store.js";
-import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
-
+import { ref } from "vue";
+import { useUserStore } from "../stores/user-store";
 const $q = useQuasar();
 
 const userStore = useUserStore();
 const router = useRouter();
-
 const email = ref("");
 const password = ref("");
+const formLogin = ref(null);
 
 const handleSubmit = async () => {
   try {
-    console.log("paso las validaciones");
+    console.log("pasó las validaciones");
     await userStore.access(email.value, password.value);
     router.push("/");
     email.value = "";
@@ -41,32 +40,38 @@ const alertDialogBackend = (message = "Error en el servidor") => {
 
 <template>
   <q-page class="row justify-center">
-    <div class="col-12 col-sm-6 col-md-4">
+    <div class="col-12 col-sm-6 col-md-5">
       <h3>Login</h3>
-      <q-form @submit.prevent="handleSubmit">
+      <q-form @submit.prevent="handleSubmit" ref="formLogin">
         <q-input
           v-model="email"
-          label="Ingrese Email"
-          type="email"
+          label="Ingrese email"
+          type="text"
           :rules="[
             (val) =>
-              (val && /[^@]+@[^@]+\.[a-zA-Z]{2,}$/.test(val)) ||
+              (val && /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/.test(val)) ||
               'Formato email incorrecto',
           ]"
+          lazy-rules
         ></q-input>
+
         <q-input
           v-model="password"
-          label="Ingrese Contraseña"
+          label="Ingrese contraseña"
           type="password"
           :rules="[
             (val) =>
-              (val && val.length > 5) || 'Contraseña Minimo 6 caracteresr',
+              (val && val.length > 5) || 'Contraseña mínimo 6 carácteres',
           ]"
+          lazy-rules
         ></q-input>
+
         <div>
-          <q-btn type="submit"> Login</q-btn>
+          <q-btn label="Login" type="submit"></q-btn>
         </div>
       </q-form>
     </div>
   </q-page>
 </template>
+
+<style></style>

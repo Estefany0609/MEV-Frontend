@@ -12,14 +12,24 @@
         />
 
         <q-toolbar-title> Quasar App </q-toolbar-title>
-        <q-btn color="dark" to="/" v-if="userStore.token">Inicio</q-btn>
+
         <q-btn class="q-mr-sm" color="green" to="/login" v-if="!userStore.token"
           >Login</q-btn
         >
         <q-btn color="green" to="/register" v-if="!userStore.token"
           >Register</q-btn
         >
-        <q-btn color="red" @click="logout" v-if="userStore.token">Logout</q-btn>
+
+        <q-btn class="q-mr-sm" color="dark" to="/" v-if="userStore.token"
+          >Inicio</q-btn
+        >
+        <q-btn
+          class="q-mr-sm"
+          color="red"
+          @click="logout"
+          v-if="userStore.token"
+          >Logout</q-btn
+        >
         <q-btn color="orange" to="/protected" v-if="userStore.token"
           >Protected</q-btn
         >
@@ -47,7 +57,7 @@
 <script setup>
 import { ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
-import { useUserStore } from "../stores/user-store.js";
+import { useUserStore } from "../stores/user-store";
 import { useRouter } from "vue-router";
 
 const leftDrawerOpen = ref(false);
@@ -67,7 +77,6 @@ const accessUser = async () => {
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
-
 const essentialLinks = [
   {
     title: "Docs",

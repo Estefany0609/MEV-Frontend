@@ -8,23 +8,21 @@ export const useUserStore = defineStore("user", () => {
 
   const access = async (email, password) => {
     try {
-      console.log("me diste click");
       const res = await api.post("/auth/login", {
         email: email,
         password: password,
       });
       token.value = res.data.token;
       expiresIn.value = res.data.expiresIn;
-      sessionStorage.setItem("user", true);
+      sessionStorage.setItem("user", "🔥🔥");
       setTime();
     } catch (error) {
       if (error.response) {
-        //console.log(error.response.data);
+        // console.log(error.response.data);
         throw error.response.data;
       } else if (error.request) {
-        //console.log(error.request);
+        console.log(error.request);
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.log("Error", error.message);
       }
     }
@@ -32,7 +30,6 @@ export const useUserStore = defineStore("user", () => {
 
   const register = async (email, password, repassword) => {
     try {
-      console.log("me diste click");
       const res = await api.post("/auth/register", {
         email: email,
         password: password,
@@ -40,16 +37,15 @@ export const useUserStore = defineStore("user", () => {
       });
       token.value = res.data.token;
       expiresIn.value = res.data.expiresIn;
-      sessionStorage.setItem("user", true);
+      sessionStorage.setItem("user", "🔥🔥");
       setTime();
     } catch (error) {
       if (error.response) {
-        //console.log(error.response.data);
+        // console.log(error.response.data);
         throw error.response.data;
       } else if (error.request) {
-        //console.log(error.request);
+        console.log(error.request);
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.log("Error", error.message);
       }
     }
@@ -63,25 +59,28 @@ export const useUserStore = defineStore("user", () => {
     } finally {
       resetStore();
       sessionStorage.removeItem("user");
+      location.reload();
     }
   };
+
   const setTime = () => {
     setTimeout(() => {
-      console.log("se refresco");
+      console.log("se refrescó");
       refreshToken();
     }, expiresIn.value * 1000 - 6000);
   };
 
   const refreshToken = async () => {
+    console.log("RefreshToken");
     try {
       const res = await api.get("/auth/refresh");
       token.value = res.data.token;
       expiresIn.value = res.data.expiresIn;
-      sessionStorage.setItem("user", true);
+      sessionStorage.setItem("user", "PAYASO CREES QUE ME ROBARÁS??!");
       setTime();
     } catch (error) {
       console.log(error);
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
     }
   };
 
